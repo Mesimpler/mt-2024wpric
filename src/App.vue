@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch, onBeforeMount } from "vue";
 
 const grads = [
   {
@@ -108,6 +108,21 @@ const tableData = ref([
     boost: 3,
   },
 ]);
+
+onBeforeMount(() => {
+  const localTableData = localStorage.getItem("tableData");
+  if (localTableData !== null) {
+    tableData.value = JSON.parse(localTableData);
+  }
+});
+
+watch(
+  tableData,
+  (newTableData) => {
+    localStorage.setItem("tableData", JSON.stringify(newTableData));
+  },
+  { deep: true }
+);
 
 const totalPoint = computed(() => {
   return tableData.value.reduce((accumulator, item) => {
